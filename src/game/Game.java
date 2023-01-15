@@ -1,16 +1,24 @@
 package game;
 
 import game.interfaces.GameLogic;
+import types.AnimalType;
+import types.CropType;
+import types.ShopPrices;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.util.Properties;
+
 
 public class Game implements GameLogic {
+
     public PlayerLogic playerLogic;
     public Animals animals;
     public Crops crops;
     public Database database;
     public int bills;
+
 
     public Game() {
         this.playerLogic = new PlayerLogic("PLAYER");
@@ -114,6 +122,7 @@ public class Game implements GameLogic {
             throw new RuntimeException(e);
         }
     }
+
 
     public int getBills() {
         return bills;

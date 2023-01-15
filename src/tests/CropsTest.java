@@ -5,8 +5,8 @@ import game.PlayerLogic;
 import org.junit.Test;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.AssertJUnit.*;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.fail;
 
 public class CropsTest {
 

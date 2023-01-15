@@ -81,20 +81,20 @@ public class KeyHandler implements KeyListener{
                     switch (panel.ui.fieldScreenState) {
                         case 0 -> fieldScreen(code);
                         case 1 -> {
-                            plantScreen(code);
                             crops.setOption(1);
+                            plantScreen(code);
                         }
                         case 2 -> {
-                            menuFieldSwitch(code);
                             crops.setOption(2);
+                            menuFieldSwitch(code);
                         }
                         case 3 -> {
-                            menuFieldSwitch(code);
                             crops.setOption(3);
+                            menuFieldSwitch(code);
                         }
                         case 4 -> {
-                            menuFieldSwitch(code);
                             crops.setOption(1);
+                            menuFieldSwitch(code);
                         }
                     }
                 }
@@ -102,24 +102,24 @@ public class KeyHandler implements KeyListener{
                     switch (panel.ui.fieldFarmScreenState) {
                         case 0 -> farmScreen(code);
                         case 1 -> {
-                            buyAnimalScreen(code);
                             animals.setOption(1);
+                            buyAnimalScreen(code);
                         }
                         case 2 -> {
-                            menuFarmSwitch(code);
                             animals.setOption(2);
+                            menuFarmSwitch(code);
                         }
                         case 3 -> {
-                            menuFarmSwitch(code);
                             animals.setOption(3);
+                            menuFarmSwitch(code);
                         }
                         case 4 -> {
-                            menuFarmSwitch(code);
                             animals.setOption(4);
+                            menuFarmSwitch(code);
                         }
                         case 5 -> {
-                            menuFarmSwitch(code);
                             animals.setOption(1);
+                            menuFarmSwitch(code);
                         }
                     }
                 }
@@ -539,6 +539,7 @@ public class KeyHandler implements KeyListener{
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
                 panel.ui.fieldScreenState = 0;
+                crops.setOption(0);
             }
             case KeyEvent.VK_W -> {
                 panel.ui.commandNum--;
@@ -606,6 +607,7 @@ public class KeyHandler implements KeyListener{
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
                 panel.ui.fieldFarmScreenState = 0;
+                animals.setOption(0);
             }
             case KeyEvent.VK_W -> {
                 panel.ui.commandNum--;

@@ -3,7 +3,6 @@ package game;
 import game.interfaces.GameLogicCrops;
 import game.interfaces.GameLogicPlayer;
 import types.CropType;
-import types.ShopPrices;
 
 import java.util.*;
 
@@ -30,31 +29,31 @@ public class Crops implements GameLogicCrops {
         if (!isLoaded.getOrDefault(type, false)) {
             switch (type) {
                 case "Wheat" -> {
-                    this.costCrops.put("Wheat", CropType.Wheat.getCost());
+                    this.costCrops.put("Wheat", playerLogic.getCostCrops("Wheat"));
                     this.growTime.put("Wheat",CropType.Wheat.getGrowTime());
                     this.amount.put("Wheat",0);
                     isLoaded.put(type, true);
                 }
                 case "Corn" -> {
-                    this.costCrops.put("Corn",CropType.Corn.getCost());
+                    this.costCrops.put("Corn", playerLogic.getCostCrops("Corn"));
                     this.growTime.put("Corn",CropType.Corn.getGrowTime());
                     this.amount.put("Corn",0);
                     isLoaded.put(type, true);
                 }
                 case "Carrots" -> {
-                    this.costCrops.put("Carrots",CropType.Carrots.getCost());
+                    this.costCrops.put("Carrots", playerLogic.getCostCrops("Carrots"));
                     this.growTime.put("Carrots",CropType.Carrots.getGrowTime());
                     this.amount.put("Carrots",0);
                     isLoaded.put(type, true);
                 }
                 case "Hay" -> {
-                    this.costCrops.put("Hay",CropType.Hay.getCost());
+                    this.costCrops.put("Hay", playerLogic.getCostCrops("Hay"));
                     this.growTime.put("Hay",CropType.Hay.getGrowTime());
                     this.amount.put("Hay",0);
                     isLoaded.put(type, true);
                 }
                 case "Potatoes" -> {
-                    this.costCrops.put("Potatoes",CropType.Potatoes.getCost());
+                    this.costCrops.put("Potatoes", playerLogic.getCostCrops("Potatoes"));
                     this.growTime.put("Potatoes",CropType.Potatoes.getGrowTime());
                     this.amount.put("Potatoes",0);
                     isLoaded.put(type, true);
@@ -127,6 +126,7 @@ public class Crops implements GameLogicCrops {
         }
         throw new CropsException("You got " + numberOf + " " + name);
     }
+
     public void plant(String type, String field) throws CropsException {
         try {
             if (this.field.get(field) == null) {
@@ -146,9 +146,9 @@ public class Crops implements GameLogicCrops {
 
     public void buy(int numberOf, String type) throws NotEnoughMoneyException {
         loadInfo(type);
-            if (playerLogic.getBalance() >= ShopPrices.valueOf(type).getValue() * numberOf) {
+            if (playerLogic.getBalance() >= costCrops.get(type) * numberOf) {
                 this.amount.put(type, this.amount.get(type) + numberOf);
-                playerLogic.setBalance(playerLogic.getBalance() - numberOf * ShopPrices.valueOf(type).getValue());
+                playerLogic.setBalance(playerLogic.getBalance() - numberOf * costCrops.get(type));
             } else {
                 throw new NotEnoughMoneyException("You don't have enough money");
             }

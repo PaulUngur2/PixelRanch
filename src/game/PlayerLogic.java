@@ -1,6 +1,9 @@
 package game;
 
 import game.interfaces.GameLogicPlayer;
+import types.AnimalType;
+import types.CropType;
+import types.ShopPrices;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,16 +15,21 @@ public class PlayerLogic implements GameLogicPlayer {
     private int balance;
     private int days;
     Properties prop = new Properties();
-    InputStream input = getClass().getClassLoader().getResourceAsStream("difficulty/difficulty.conf");
+    InputStream input = this.getClass().getClassLoader().getResourceAsStream("difficulty/difficulty.conf");
 
     public PlayerLogic(String name) {
         configDifficulty();
         this.name = name;
         this.days = 1;
+        try {
+            input = this.getClass().getClassLoader().getResourceAsStream("difficulty/difficulty.conf");
+            prop.load(input);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void configDifficulty() {
-
         try {
             // load a properties file
             prop.load(input);
@@ -47,6 +55,46 @@ public class PlayerLogic implements GameLogicPlayer {
             prop.store(out, "Updating difficulty property");
         }
     }
+
+    public int getCostCrops(String type) {
+        int cost = CropType.valueOf(type).getCost();
+        // get the value of the difficulty property
+        String difficulty = prop.getProperty("difficulty");
+
+        // if the difficulty is "hard", return the cost multiplied by 1.5
+        if (difficulty.equals("hard")) {
+            return (int) (cost * 1.5);
+        } else {
+            return cost;
+        }
+    }
+
+    public int getCostAnimals(String type) {
+        int cost = AnimalType.valueOf(type).getCost();
+        // get the value of the difficulty property
+        String difficulty = prop.getProperty("difficulty");
+
+        // if the difficulty is "hard", return the cost multiplied by 1.5
+        if (difficulty.equals("hard")) {
+            return (int) (cost * 1.5);
+        } else {
+            return cost;
+        }
+    }
+
+    public int getValue(String type) {
+        int value = ShopPrices.valueOf(type).getValue();
+        // get the value of the difficulty property
+        String difficulty = prop.getProperty("difficulty");
+
+        // if the difficulty is "hard", return the cost multiplied by 1.5
+        if (difficulty.equals("hard")) {
+            return (int) (value / 1.5);
+        } else {
+            return value;
+        }
+    }
+
 
     public int getDays() {
         return days;

@@ -4,7 +4,9 @@ import game.interfaces.GameLogic;
 import game.interfaces.GameLogicAnimals;
 import game.interfaces.GameLogicCrops;
 import game.interfaces.GameLogicPlayer;
+import types.AnimalType;
 import types.CropType;
+import types.ShopPrices;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -77,9 +79,9 @@ public class UI {
     }
     public void drawPlayerStats() {
         g2d.setFont(pressStartK.deriveFont(Font.BOLD,10f));
-        g2d.drawString("MONEY: " + player.getBalance(), 600, 570);
+        g2d.drawString("MONEY: " + player.getBalance()+"G", 600, 570);
         g2d.drawString("DAY: " + player.getDays(), 470, 570);
-        g2d.drawString("NEXT BILLS: " + game.getBills(), 180, 570);
+        g2d.drawString("NEXT BILLS: " + game.getBills()+"G", 180, 570);
         g2d.drawString("NAME: " + player.getName(), 50, 570);
     }
 
@@ -183,7 +185,7 @@ public class UI {
             drawTextMenu("WHAT DO YOU WANT TO BUY?", panel.tilesSize * 3, panel.tilesSize * 2);
 
             drawCrops();
-            drawCropsNumber();
+            drawCropsNumberAndPrice();
             drawMultiplier();
             drawTips();
         } else if (sellScreenState == 1) {
@@ -192,7 +194,7 @@ public class UI {
             drawTextMenu("WHAT DO YOU WANT TO SELL?", panel.tilesSize * 3, panel.tilesSize * 2);
 
             drawSellAnimalsProduce();
-            drawProduceNumber();
+            drawProduceNumberAndPrice();
             drawMultiplier();
             drawTips();
         }
@@ -223,7 +225,7 @@ public class UI {
                 g2d.setFont(pressStartK.deriveFont(10F));
                 drawTextMenu("WHAT DO YOU WANT TO PLANT? YOU'LL NEED 5 SEEDS", panel.tilesSize * 3, panel.tilesSize * 2);
                 drawCrops();
-                drawCropsNumber();
+                drawCropsNumberAndPrice();
                 drawBuyFieldPrice();
                 drawTips();
             }
@@ -278,6 +280,7 @@ public class UI {
             drawTextMenu("BUY FIELD", panel.tilesSize * 4, panel.tilesSize * 5);
             drawBuyFieldFarmPrice();
             drawTips();
+            drawAnimalsPrice();
         } else if (fieldFarmScreenState == 2) {
             g2d.setFont(pressStartK.deriveFont(10F));
             drawTextMenu("WHICH ANIMAL DO YOU WANT TO KILL?", panel.tilesSize * 3, panel.tilesSize * 2);
@@ -569,9 +572,9 @@ public class UI {
                     switch (fieldFarmScreenState) {
                         case 3 -> {
                             if (animals.getCollected().get(key)) {
-                                drawTextMenu("NOT COLLECTED", panel.tilesSize * 8, (int) (panel.tilesSize * (2.5 + (0.5) * i)));
-                            } else {
                                 drawTextMenu("COLLECTED", panel.tilesSize * 8, (int) (panel.tilesSize * (2.5 + (0.5) * i)));
+                            } else {
+                                drawTextMenu("NOT COLLECTED", panel.tilesSize * 8, (int) (panel.tilesSize * (2.5 + (0.5) * i)));
                             }
                         }
                         case 4 -> {
@@ -588,13 +591,18 @@ public class UI {
         }
     }
 
-    public void drawCropsNumber(){
+    public void drawCropsNumberAndPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu(cropsNumber("Wheat"), panel.tilesSize * 8, (int) (panel.tilesSize * 2.5));
+        drawTextMenu(player.getCostCrops("Wheat")+"G", panel.tilesSize * 9, (int) (panel.tilesSize * 2.5));
         drawTextMenu(cropsNumber("Corn"), panel.tilesSize * 8, panel.tilesSize * 3);
+        drawTextMenu(player.getCostCrops("Corn")+"G", panel.tilesSize * 9, panel.tilesSize * 3);
         drawTextMenu(cropsNumber("Potatoes"), panel.tilesSize * 8, (int) (panel.tilesSize * 3.5));
+        drawTextMenu(player.getCostCrops("Potatoes")+"G", panel.tilesSize * 9, (int) (panel.tilesSize * 3.5));
         drawTextMenu(cropsNumber("Carrots"), panel.tilesSize * 8, panel.tilesSize * 4);
+        drawTextMenu(player.getCostCrops("Carrots")+"G", panel.tilesSize * 9, panel.tilesSize * 4);
         drawTextMenu(cropsNumber("Hay"), panel.tilesSize * 8, (int) (panel.tilesSize * 4.5));
+        drawTextMenu(player.getCostCrops("Hay")+"G", panel.tilesSize * 9, (int) (panel.tilesSize * 4.5));
     }
 
     public String cropsNumber(String type){
@@ -609,18 +617,29 @@ public class UI {
         }
         return numberOf;
     }
-    public void drawProduceNumber(){
+
+    public void drawProduceNumberAndPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu(produceNumber("Pork"), panel.tilesSize * 8, (int) (panel.tilesSize * 2.5));
+        drawTextMenu(player.getValue("Pork") + "G", panel.tilesSize * 9, (int) (panel.tilesSize * 2.5));
         drawTextMenu(produceNumber("Chicken_Meat"), panel.tilesSize * 8, panel.tilesSize * 3);
+        drawTextMenu(player.getValue("Chicken_Meat") + "G", panel.tilesSize * 9, panel.tilesSize * 3);
         drawTextMenu(produceNumber("Rabbit_Meat"), panel.tilesSize * 8, (int) (panel.tilesSize * 3.5));
+        drawTextMenu(player.getValue("Rabbit_Meat") + "G", panel.tilesSize * 9, (int) (panel.tilesSize * 3.5));
         drawTextMenu(produceNumber("Beef"), panel.tilesSize * 8, panel.tilesSize * 4);
+        drawTextMenu(player.getValue("Beef") + "G", panel.tilesSize * 9, panel.tilesSize * 4);
         drawTextMenu(produceNumber("Mutton"), panel.tilesSize * 8, (int) (panel.tilesSize * 4.5));
+        drawTextMenu(player.getValue("Mutton") + "G", panel.tilesSize * 9, (int) (panel.tilesSize * 4.5));
         drawTextMenu(produceNumber("Eggs"), panel.tilesSize * 8, panel.tilesSize * 5);
+        drawTextMenu(player.getValue("Eggs") + "G", panel.tilesSize * 9, panel.tilesSize * 5);
         drawTextMenu(produceNumber("Milk"), panel.tilesSize * 8, (int) (panel.tilesSize * 5.5));
+        drawTextMenu(player.getValue("Milk") + "G", panel.tilesSize * 9, (int) (panel.tilesSize * 5.5));
         drawTextMenu(produceNumber("Wool"), panel.tilesSize * 8, panel.tilesSize * 6);
+        drawTextMenu(player.getValue("Wool") + "G", panel.tilesSize * 9, panel.tilesSize * 6);
         drawTextMenu(produceNumber("Hide"), panel.tilesSize * 8, (int) (panel.tilesSize * 6.5));
+        drawTextMenu(player.getValue("Hide") + "G", panel.tilesSize * 9, (int) (panel.tilesSize * 6.5));
     }
+
     public String produceNumber(String type){
         String numberOf = "0";
         try {
@@ -634,6 +653,14 @@ public class UI {
         return numberOf;
     }
 
+    public void drawAnimalsPrice(){
+        g2d.setFont(pressStartK.deriveFont(15F));
+        drawTextMenu(player.getCostAnimals("Pig") + "G", panel.tilesSize * 8, (int) (panel.tilesSize * 2.5));
+        drawTextMenu(player.getCostAnimals("Chicken") + "G", panel.tilesSize * 8, panel.tilesSize * 3);
+        drawTextMenu(player.getCostAnimals("Rabbit") + "G", panel.tilesSize * 8, (int) (panel.tilesSize * 3.5));
+        drawTextMenu(player.getCostAnimals("Cow") + "G", panel.tilesSize * 8, panel.tilesSize * 4);
+        drawTextMenu(player.getCostAnimals("Sheep") + "G", panel.tilesSize * 8, (int) (panel.tilesSize * 4.5));
+    }
     public void drawBuyFieldPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu("BUY FIELD", panel.tilesSize * 4, panel.tilesSize * 5);

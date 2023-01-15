@@ -13,4 +13,7 @@ public interface GameLogicPlayer {
     void configDifficulty();
     void setConfigDifficulty(String difficulty) throws IOException;
     void setDays(int days);
+    int getCostCrops(String type);
+    int getCostAnimals(String type);
+    int getValue(String type);
 }

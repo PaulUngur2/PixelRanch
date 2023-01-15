@@ -35,7 +35,7 @@ public class Animals implements GameLogicAnimals {
         if (!isLoaded.getOrDefault(type, false)) {
             switch (type) {
                 case "Pig" -> {
-                    this.costAnimals.put("Pig", AnimalType.Pig.getCost());
+                    this.costAnimals.put("Pig", playerLogic.getCostAnimals("Pig"));
                     this.foodType.put("Pig",AnimalType.Pig.getFood());
                     String[] produce = AnimalType.Pig.getProduce();
                     for (String p : produce) {
@@ -44,7 +44,7 @@ public class Animals implements GameLogicAnimals {
                     isLoaded.put(type, true);
                 }
                 case "Chicken" -> {
-                    this.costAnimals.put("Chicken",AnimalType.Chicken.getCost());
+                    this.costAnimals.put("Chicken", playerLogic.getCostAnimals("Chicken"));
                     this.foodType.put("Chicken",AnimalType.Chicken.getFood());
                     String[] produce = AnimalType.Chicken.getProduce();
                     for (String p : produce) {
@@ -53,7 +53,7 @@ public class Animals implements GameLogicAnimals {
                     isLoaded.put(type, true);
                 }
                 case "Rabbit" -> {
-                    this.costAnimals.put("Rabbit",AnimalType.Rabbit.getCost());
+                    this.costAnimals.put("Rabbit", playerLogic.getCostAnimals("Rabbit"));
                     this.foodType.put("Rabbit",AnimalType.Rabbit.getFood());
                     String[] produce = AnimalType.Rabbit.getProduce();
                     for (String p : produce) {
@@ -62,7 +62,7 @@ public class Animals implements GameLogicAnimals {
                     isLoaded.put(type, true);
                 }
                 case "Cow" -> {
-                    this.costAnimals.put("Cow",AnimalType.Pig.getCost());
+                    this.costAnimals.put("Cow", playerLogic.getCostAnimals("Cow"));
                     this.foodType.put("Cow",AnimalType.Cow.getFood());
                     String[] produce = AnimalType.Cow.getProduce();
                     for (String p : produce) {
@@ -71,7 +71,7 @@ public class Animals implements GameLogicAnimals {
                     isLoaded.put(type, true);
                 }
                 case "Sheep" -> {
-                    this.costAnimals.put("Sheep",AnimalType.Pig.getCost());
+                    this.costAnimals.put("Sheep", playerLogic.getCostAnimals("Sheep"));
                     this.foodType.put("Sheep",AnimalType.Sheep.getFood());
                     String[] produce = AnimalType.Sheep.getProduce();
                     for (String p : produce) {
@@ -106,7 +106,7 @@ public class Animals implements GameLogicAnimals {
             int available = this.produceType.get(type);
             int amountToSell = Math.min(numberOf, available);
             this.produceType.put(type, available - amountToSell);
-            playerLogic.setBalance(playerLogic.getBalance() + amountToSell * ShopPrices.valueOf(type).getValue());
+            playerLogic.setBalance(playerLogic.getBalance() + amountToSell * playerLogic.getValue(type));
         } catch (NullPointerException e) {
             throw new NotEnoughProduceException("You can't sell more of that.");
         }
@@ -153,25 +153,45 @@ public class Animals implements GameLogicAnimals {
     public void kill(String field) throws FieldsException {
         try {
             if (!this.field.get(field).equals("empty")) {
+                int numberOf;
+
                 switch (this.field.get(field)) {
-                    case "Pig" -> this.produceType.put("Pork", random.nextInt(5) + 1);
-                    case "Chicken" -> this.produceType.put("Chicken_Meat", random.nextInt(3) + 1);
+                    case "Pig" -> {
+                        numberOf = random.nextInt(8) + 1;
+                        this.produceType.put("Pork", this.produceType.get("Pork") + numberOf);
+                        this.field.put(field, "empty");
+                        throw new FieldsException("You collected " + numberOf + " of pork.");
+                    }
+                    case "Chicken" -> {
+                        numberOf = random.nextInt(5) + 1;
+                        this.produceType.put("Chicken_Meat", this.produceType.get("Chicken_Meat") + numberOf);
+                        this.field.put(field, "empty");
+                        throw new FieldsException("You collected " + numberOf + " of chicken meat.");
+                    }
                     case "Rabbit" -> {
-                        this.produceType.put("Rabbit_Meat", random.nextInt(2) + 1);
-                        this.produceType.put("Hide", 1);
+                        numberOf = random.nextInt(4) + 1;
+                        this.produceType.put("Rabbit_Meat", this.produceType.get("Rabbit_Meat") + numberOf);
+                        this.produceType.put("Hide", this.produceType.get("Hide") + 1);
+                        this.field.put(field, "empty");
+                        throw new FieldsException("You collected " + numberOf + " of rabbit meat and 1 hide.");
                     }
                     case "Cow" -> {
-                        this.produceType.put("Beef", random.nextInt(3) + 1);
-                        this.produceType.put("Hide", random.nextInt(2) + 1);
+                        numberOf = random.nextInt(10) + 1;
+                        this.produceType.put("Beef", this.produceType.get("Beef") + numberOf);
+                        this.produceType.put("Hide", this.produceType.get("Hide") + 2);
+                        this.field.put(field, "empty");
+                        throw new FieldsException("You collected " + numberOf + " of beef and 2 hides.");
                     }
                     case "Sheep" -> {
-                        this.produceType.put("Mutton", random.nextInt(3) + 1);
+                        numberOf = random.nextInt(7) + 1;
+                        this.produceType.put("Mutton", this.produceType.get("Mutton") + numberOf);
+                        this.produceType.put("Wool", this.produceType.get("Wool") + 1);
+                        this.field.put(field, "empty");
+                        throw new FieldsException("You collected " + numberOf + " of mutton and 1 wool.");
                     }
                 }
-                this.field.put(field, "empty");
-
             } else {
-                throw new FieldsException("There are no " + this.field.get(field) + " to kill.");
+                throw new FieldsException("There are no animals to kill.");
             }
         } catch (NullPointerException e ){
             throw new FieldsException("You need to buy that field");
@@ -187,19 +207,19 @@ public class Animals implements GameLogicAnimals {
                     case "Pig" -> throw new FieldsException("Pigs have a sad fate.");
                     case "Chicken" -> {
                         numberOf = random.nextInt(6) + 1;
-                        this.produceType.put("Eggs", this.produceType.get(this.field.get(field)) + numberOf);
-                        throw new FieldsException("You " + numberOf + " collected eggs.");
+                        this.produceType.put("Eggs", this.produceType.get("Eggs") + numberOf);
+                        throw new FieldsException("You collected " + numberOf + " of eggs.");
                     }
                     case "Rabbit" -> throw new FieldsException("Rabbits have a sad fate.");
                     case "Cow" -> {
                         numberOf = random.nextInt(7) + 1;
-                        this.produceType.put("Milk", this.produceType.get(this.field.get(field)) + numberOf);
-                        throw new FieldsException("You " + numberOf + "collected milk.");
+                        this.produceType.put("Milk", this.produceType.get("Milk") + numberOf);
+                        throw new FieldsException("You collected " + numberOf + " of milk.");
                     }
                     case "Sheep" -> {
                         numberOf = random.nextInt(7) + 1;
-                        this.produceType.put("Wool", this.produceType.get(this.field.get(field)) + numberOf);
-                        throw new FieldsException("You " + numberOf + "collected wool.");
+                        this.produceType.put("Wool", this.produceType.get("Wool") + numberOf);
+                        throw new FieldsException("You collected " + numberOf + " of wool.");
                     }
                 }
             } else {
@@ -264,7 +284,4 @@ public class Animals implements GameLogicAnimals {
         this.option = option;
     }
 
-    public void setFoodType(String animal, String type) {
-        this.foodType.put(animal, type);
-    }
 }
