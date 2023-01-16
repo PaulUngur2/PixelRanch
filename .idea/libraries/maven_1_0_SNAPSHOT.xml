@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="maven-1.0-SNAPSHOT">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../Game/maven/target/maven-1.0-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
