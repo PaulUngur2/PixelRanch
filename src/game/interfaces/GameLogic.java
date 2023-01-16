@@ -5,6 +5,7 @@ import game.Database;
 import game.Game;
 
 public interface GameLogic {
+    //Interface for the Game class
     void shutdownHook(Database database, String name);
     void restart();
     void day() throws Game.GameSystemException, Crops.FieldsException;

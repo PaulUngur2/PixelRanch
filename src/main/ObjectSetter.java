@@ -7,10 +7,11 @@ import objects.ObjectsShop2;
 
 public class ObjectSetter {
     GamePanel panel;
+    //Constructor
     public ObjectSetter(GamePanel panel) {
         this.panel = panel;
     }
-
+    //Sets up the objects
     public void setObject() {
 
         panel.objects[0] = new ObjectsShop1(panel);

@@ -5,17 +5,17 @@ import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class TileManager {
     GamePanel panel;
     public Tile [] tiles;
     public int[][] mapTileNumber; // 2D array of tile numbers
-
+    //Constructor
     public TileManager(GamePanel panel) {
         this.panel = panel;
         tiles = new Tile[16];
@@ -24,7 +24,7 @@ public class TileManager {
         loadMap("/map/map1");
 
     }
-
+    //Load tile images
     private void getTileImage() {
             setUp(0, "blank", false);
             setUp(1, "gravel", false);
@@ -41,13 +41,12 @@ public class TileManager {
             setUp(12,"house1", true);
             setUp(13,"house2", true);
     }
-
+    //Scale up tile images
     public void setUp(int index, String name, boolean collision){
         UtilityTool tool = new UtilityTool();
-
         try {
             tiles[index] = new Tile();
-            tiles[index].image = ImageIO.read(getClass().getResourceAsStream("/tile/" + name + ".png"));
+            tiles[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tile/" + name + ".png")));
             tiles[index].image = tool.scaleImage(tiles[index].image, panel.tilesSize, panel.tilesSize);
             tiles[index].collision = collision;
 
@@ -55,6 +54,7 @@ public class TileManager {
             e.printStackTrace();
         }
     }
+    //Load the map based on a txt file, each number of the map is a tile number
     public void loadMap(String path) {
 
         try {
@@ -86,7 +86,7 @@ public class TileManager {
             e.printStackTrace();
         }
     }
-
+    //Draw the map
     public void draw(Graphics2D g2d) {
         int col = 0;
         int row = 0;

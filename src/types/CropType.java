@@ -1,10 +1,7 @@
 package types;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 public enum CropType {
+    //Information on each crop
     Wheat(2,5),
     Corn(3,4),
     Potatoes(3,3),

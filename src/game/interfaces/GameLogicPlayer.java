@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public interface GameLogicPlayer {
+    //Interface for the Player class
     int getBalance();
     void setBalance(int balance);
     int getDays();

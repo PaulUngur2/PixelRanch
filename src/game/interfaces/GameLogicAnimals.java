@@ -5,6 +5,7 @@ import game.Animals;
 import java.util.Map;
 
 public interface GameLogicAnimals {
+    //Interface for the Animals class
     void sell(int numberOf, String type) throws Animals.NotEnoughProduceException;
     void buy(String type, String field) throws Animals.FieldsException, Animals.NotEnoughMoneyException;
     void buyField() throws game.Animals.FieldsException, game.Animals.NotEnoughMoneyException;

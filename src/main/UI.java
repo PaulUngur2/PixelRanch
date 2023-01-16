@@ -4,9 +4,7 @@ import game.interfaces.GameLogic;
 import game.interfaces.GameLogicAnimals;
 import game.interfaces.GameLogicCrops;
 import game.interfaces.GameLogicPlayer;
-import types.AnimalType;
 import types.CropType;
-import types.ShopPrices;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,6 +16,7 @@ import java.util.Objects;
 
 
 public class UI {
+    //UI variables
     GamePanel panel;
     GameLogicPlayer player;
     GameLogicCrops crops;
@@ -34,7 +33,7 @@ public class UI {
     public int commandNum, interaction, pauseCommandNum, difficulty = 0;
     public int numberOf = 1;
     public int titleScreenState, buyScreenState, sellScreenState, fieldFarmScreenState, fieldScreenState = 0;
-
+    //Constructor
     public UI(GamePanel panel, GameLogicPlayer player, GameLogicCrops crops, GameLogicAnimals animals, GameLogic game) {
         this.panel = panel;
         this.player = player;
@@ -43,13 +42,13 @@ public class UI {
         this.game = game;
         textField = new JTextField(5);
         try {
-            InputStream is = getClass().getResourceAsStream("/fonts/prstartk.ttf");
+            InputStream is = getClass().getResourceAsStream("/fonts/prstartk.ttf");//Add custom font
             pressStartK = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
     }
-
+    //Main draw method for the UI, depending on the state of the game, different things are drawn
     public void draw(Graphics2D g2d) {
         this.g2d = g2d;
         g2d.setFont(pressStartK);
@@ -73,10 +72,12 @@ public class UI {
             drawTitleScreen();
         }
     }
+    //Adds messages to be displayed on the screen
     public void addMessage(String message) {
         messages.add(message);
         messagesCounter.add(0);
     }
+    //Draws player stats, like name, money, day, next bills
     public void drawPlayerStats() {
         g2d.setFont(pressStartK.deriveFont(Font.BOLD,10f));
         g2d.drawString("MONEY: " + player.getBalance()+"G", 600, 570);
@@ -84,7 +85,7 @@ public class UI {
         g2d.drawString("NEXT BILLS: " + game.getBills()+"G", 180, 570);
         g2d.drawString("NAME: " + player.getName(), 50, 570);
     }
-
+    //Draws warning messages and notifications
     public void drawMessage() {
 
         int messageY = panel.tilesSize * 8;
@@ -124,13 +125,14 @@ public class UI {
             }
         }
     }
+    //Draws the titleScreen state
     public void drawTitleScreen() {
         switch (titleScreenState) {
             case 0 -> titleScreen();
             case 1 -> startScreen();
         }
     }
-
+    //Draws the pauseScreen state
     public void drawPauseScreen(){
         int x = panel.tilesSize * 2;
         int y = (int) (panel.tilesSize * 3.5);
@@ -164,7 +166,7 @@ public class UI {
         }
         drawPlayerStats();
     }
-
+    //Draws the shopWindow menu
     public void drawShopWindow(){
         g2d.setFont(pressStartK.deriveFont(20F));
         drawMenuScreen();
@@ -200,7 +202,7 @@ public class UI {
         }
         drawTips();
     }
-
+    //Draws the fieldWindow menu
     public void drawFieldWindow(){
         g2d.setFont(pressStartK.deriveFont(20F));
         drawMenuScreen();
@@ -250,7 +252,7 @@ public class UI {
         }
         drawTips();
     }
-
+    //Draws the farmWindow menu
     public void drawFarmWindow(){
         g2d.setFont(pressStartK.deriveFont(20F));
         drawMenuScreen();
@@ -304,7 +306,7 @@ public class UI {
         }
         drawTips();
     }
-
+    //Draws the animals name
     private void drawAnimals(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu("PIG", panel.tilesSize * 4, (int) (panel.tilesSize * 2.5));
@@ -332,11 +334,12 @@ public class UI {
             g2d.drawString(">", (int) (panel.tilesSize * 3.5), (int) (panel.tilesSize * 4.5));
         }
     }
+    //Draws the start screen, which has the controls, user input name and the story
     private void startScreen() {
         g2d.setColor(Color.WHITE);
         g2d.setFont(pressStartK.deriveFont(15F));
         String intro = "After losing almost all of your money in the \ncrypto crash, you return to your grandparents' \nold farm in the countryside to make a living by \nselling animal produce."
-                + "Despite your limited funds \nand growing bills, you work hard to make the farm \na success, gradually expanding your operation and overcoming \nthe challenges of the current times.";
+                + "Despite your limited funds \nand growing bills, you work hard to make the farm \na success, gradually expanding your operation and \novercoming the challenges of the current times.";
         int y = panel.tilesSize * 2;
         int i = 1;
         for(String line : intro.split("\n")) {
@@ -369,7 +372,7 @@ public class UI {
             throw new RuntimeException(e);
         }
     }
-
+    //Draws title screen where you have the difficulty and the start button
     private void titleScreen() {
 
         try {
@@ -427,7 +430,7 @@ public class UI {
             g2d.drawString("< HARD >", x, y);
         }
     }
-
+    //Draws the sell menu screen for produce
     private void drawSellAnimalsProduce() {
 
         g2d.setFont(pressStartK.deriveFont(15F));
@@ -476,7 +479,7 @@ public class UI {
             g2d.drawString(">", (int) (panel.tilesSize * 3.5), (int) (panel.tilesSize * 6.5));
         }
     }
-
+    //Draws crops
     private void drawCrops() {
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu("WHEAT", panel.tilesSize * 4, (int) (panel.tilesSize * 2.5));
@@ -504,7 +507,7 @@ public class UI {
             g2d.drawString(">", (int) (panel.tilesSize * 3.5), (int) (panel.tilesSize * 4.5));
         }
     }
-
+    //Draws the field based menus, like for plant, collect and water
     public void drawFieldText(){
         g2d.setFont(pressStartK.deriveFont(15F));
         int numFields = crops.getField().size();
@@ -549,7 +552,7 @@ public class UI {
             }
         }
     }
-
+    //Draws the field based menus, like the buy animal field menu, feed and collect produce
     public void drawFieldFarmText(){
         g2d.setFont(pressStartK.deriveFont(15F));
         int numFields = animals.getField().size();
@@ -590,7 +593,7 @@ public class UI {
             }
         }
     }
-
+    //Draws the number of crops and their price
     public void drawCropsNumberAndPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu(cropsNumber("Wheat"), panel.tilesSize * 8, (int) (panel.tilesSize * 2.5));
@@ -604,7 +607,7 @@ public class UI {
         drawTextMenu(cropsNumber("Hay"), panel.tilesSize * 8, (int) (panel.tilesSize * 4.5));
         drawTextMenu(player.getCostCrops("Hay")+"G", panel.tilesSize * 9, (int) (panel.tilesSize * 4.5));
     }
-
+    //Number of crops
     public String cropsNumber(String type){
         String numberOf = "0";
         try {
@@ -617,7 +620,7 @@ public class UI {
         }
         return numberOf;
     }
-
+    //Draws the number of animals and their produce price
     public void drawProduceNumberAndPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu(produceNumber("Pork"), panel.tilesSize * 8, (int) (panel.tilesSize * 2.5));
@@ -639,7 +642,7 @@ public class UI {
         drawTextMenu(produceNumber("Hide"), panel.tilesSize * 8, (int) (panel.tilesSize * 6.5));
         drawTextMenu(player.getValue("Hide") + "G", panel.tilesSize * 9, (int) (panel.tilesSize * 6.5));
     }
-
+    //Number of produce
     public String produceNumber(String type){
         String numberOf = "0";
         try {
@@ -652,7 +655,7 @@ public class UI {
         }
         return numberOf;
     }
-
+    //Draws the price of animals
     public void drawAnimalsPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu(player.getCostAnimals("Pig") + "G", panel.tilesSize * 8, (int) (panel.tilesSize * 2.5));
@@ -661,6 +664,7 @@ public class UI {
         drawTextMenu(player.getCostAnimals("Cow") + "G", panel.tilesSize * 8, panel.tilesSize * 4);
         drawTextMenu(player.getCostAnimals("Sheep") + "G", panel.tilesSize * 8, (int) (panel.tilesSize * 4.5));
     }
+    //Draws the field price
     public void drawBuyFieldPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu("BUY FIELD", panel.tilesSize * 4, panel.tilesSize * 5);
@@ -674,7 +678,7 @@ public class UI {
             drawTextMenu("FIRST FIELD IS FREE", panel.tilesSize * 4, panel.tilesSize * 6);
         }
     }
-
+    //Draws the farm field price
     public void drawBuyFieldFarmPrice(){
         g2d.setFont(pressStartK.deriveFont(15F));
         drawTextMenu("BUY FIELD", panel.tilesSize * 4, panel.tilesSize * 5);
@@ -688,12 +692,12 @@ public class UI {
             drawTextMenu("FIRST FIELD IS FREE", panel.tilesSize * 4, panel.tilesSize * 6);
         }
     }
-
+    //Centers the text
     public int centerText(String text){
         int length = (int) g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
         return (panel.screenWidth - length) / 2;
     }
-
+    //Draws the background for the menus
     public void drawMenuScreen(){
         int x = panel.tilesSize * 2;
         int y = panel.tilesSize / 2;
@@ -701,7 +705,7 @@ public class UI {
         int height = panel.tilesSize * 10;
         drawMenuWindow(x, y, width, height);
     }
-
+    //Draws the multiplier for buy/sell
     public void drawMultiplier (){
         g2d.setFont(pressStartK.deriveFont(20F));
         drawTextMenu("x" + numberOf, panel.tilesSize * 12, (int) (panel.tilesSize * 1.5));
@@ -709,12 +713,12 @@ public class UI {
 
         drawTextMenu("PRESS SPACE TO MULTIPLY", panel.tilesSize * 8, panel.tilesSize * 10);
     }
-
+    //Draws tips/hints in the menus
     public void drawTips(){
         g2d.setFont(pressStartK.deriveFont(10F));
         drawTextMenu("PRESS ESC TO GO BACK", (int) (panel.tilesSize * 3.5), panel.tilesSize * 10);
     }
-
+    //Draws the menu window
     public void drawMenuWindow(int x, int y, int width, int height){
         Color color = new Color(0, 0, 0, 220);
         g2d.setColor(color);
@@ -726,12 +730,11 @@ public class UI {
         g2d.drawRoundRect(x, y, width, height, 35, 35);
 
     }
-
+    //Draws the text in the menu
     public void drawTextMenu(String text, int x, int y){
         g2d.setColor(Color.WHITE);
         g2d.drawString(text, x, y);
     }
-
 }
 
 

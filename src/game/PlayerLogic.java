@@ -11,16 +11,19 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PlayerLogic implements GameLogicPlayer {
+    //Player variables
     private String name;
     private int balance;
     private int days;
     Properties prop = new Properties();
     InputStream input = this.getClass().getClassLoader().getResourceAsStream("difficulty/difficulty.conf");
-
+    //Constructor
     public PlayerLogic(String name) {
+
         configDifficulty();
         this.name = name;
         this.days = 1;
+        //Checks the difficulty when the player constructor is called to adjust the prices
         try {
             input = this.getClass().getClassLoader().getResourceAsStream("difficulty/difficulty.conf");
             prop.load(input);
@@ -28,16 +31,17 @@ public class PlayerLogic implements GameLogicPlayer {
             ex.printStackTrace();
         }
     }
-
+    //Difficulty loader
     public void configDifficulty() {
+
         try {
-            // load a properties file
+            //Loads the properties file
             prop.load(input);
 
-            // get the value of the difficulty property
+            //Gets the value of the difficulty property
             String difficulty = prop.getProperty("difficulty");
 
-            // if the difficulty is "hard", the starting balance will be 500 else 1000
+            //If the difficulty is "hard", the starting balance will be 500 else 1000
             if (difficulty.equals("hard")) {
                 this.balance = 500;
             } else {
@@ -47,55 +51,56 @@ public class PlayerLogic implements GameLogicPlayer {
             e.printStackTrace();
         }
     }
-
+    //Sets the difficulty based on the choice in the title screen
     public void setConfigDifficulty(String difficulty) throws IOException {
+
         prop.load(input);
         prop.setProperty("difficulty", difficulty);
         try (FileOutputStream out = new FileOutputStream("resources/difficulty/difficulty.conf")) {
+            //Save the updated properties to the specified file, with a comment "Updating difficulty property"
             prop.store(out, "Updating difficulty property");
         }
     }
-
+    //Gets the cost of the seed crops based on the difficulty
     public int getCostCrops(String type) {
+
         int cost = CropType.valueOf(type).getCost();
-        // get the value of the difficulty property
         String difficulty = prop.getProperty("difficulty");
 
-        // if the difficulty is "hard", return the cost multiplied by 1.5
+        //If the difficulty is "hard", return the cost multiplied by 1.5
         if (difficulty.equals("hard")) {
             return (int) (cost * 1.5);
         } else {
             return cost;
         }
     }
-
+    //Gets the cost of the animals based on the difficulty
     public int getCostAnimals(String type) {
+
         int cost = AnimalType.valueOf(type).getCost();
-        // get the value of the difficulty property
         String difficulty = prop.getProperty("difficulty");
 
-        // if the difficulty is "hard", return the cost multiplied by 1.5
+        //If the difficulty is "hard", return the cost multiplied by 1.5
         if (difficulty.equals("hard")) {
             return (int) (cost * 1.5);
         } else {
             return cost;
         }
     }
-
+    //Gets the value of the produce based on the difficulty
     public int getValue(String type) {
+
         int value = ShopPrices.valueOf(type).getValue();
-        // get the value of the difficulty property
         String difficulty = prop.getProperty("difficulty");
 
-        // if the difficulty is "hard", return the cost multiplied by 1.5
+        //If the difficulty is "hard", return the cost divided by 1.5
         if (difficulty.equals("hard")) {
             return (int) (value / 1.5);
         } else {
             return value;
         }
     }
-
-
+    //Getters and Setters
     public int getDays() {
         return days;
     }

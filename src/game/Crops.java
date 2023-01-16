@@ -7,6 +7,7 @@ import types.CropType;
 import java.util.*;
 
 public class Crops implements GameLogicCrops {
+    //Crop variables
     private Map<String, Integer> costCrops = new HashMap<>();
     private Map<String, Integer> amount = new HashMap<>();
     private Map<String, Integer> growTime = new HashMap<>();
@@ -20,12 +21,13 @@ public class Crops implements GameLogicCrops {
 
     Random random = new Random();
     GameLogicPlayer playerLogic;
-
+    //Constructor
     public Crops(GameLogicPlayer player) {
         this.playerLogic = player;
     }
-
+    //Information loader, accessed when seeds are bought
     public void loadInfo(String type){
+
         if (!isLoaded.getOrDefault(type, false)) {
             switch (type) {
                 case "Wheat" -> {
@@ -61,7 +63,7 @@ public class Crops implements GameLogicCrops {
             }
         }
     }
-
+    //Custom exceptions
     public static class FieldsException extends Exception {
         public FieldsException(String message) {
             super(message.toUpperCase());
@@ -79,14 +81,15 @@ public class Crops implements GameLogicCrops {
             super(message.toUpperCase());
         }
     }
-
+    //Buy field method, needed to plant crops
     public void buyField() throws FieldsException, NotEnoughMoneyException {
-        int numFields = field.size(); // number of fields currently owned
+
+        int numFields = field.size();
         int price;
         if (numFields == 0) {
-            price = 0; // first field is free
+            price = 0; //First field is free
         } else {
-            price = (int) (100 * Math.pow(1.3, numFields)); // prices increase by 30% with each purchase
+            price = (int) (100 * Math.pow(1.3, numFields)); //Prices increase by 30% with each purchase
         }
         if (numFields >= 6) {
             throw new FieldsException("Cannot buy any more fields.");
@@ -94,11 +97,12 @@ public class Crops implements GameLogicCrops {
         if (playerLogic.getBalance() < price) {
             throw new NotEnoughMoneyException("Not enough money to buy field.");
         }
-        field.put("Field " + (numFields + 1), "empty"); // add a new field to the map
-        playerLogic.setBalance(playerLogic.getBalance() - price); // subtract the price from the player's money
+        field.put("Field " + (numFields + 1), "empty");
+        playerLogic.setBalance(playerLogic.getBalance() - price);
     }
-
+    //Checker for the growth of the crops, it's called every day
     public boolean checkGrowth(String field) throws FieldsException {
+
         try {
             if (!this.field.get(field).equals("empty")) {
                 return Objects.equals(this.sincePlanted.get(field), this.growTime.get(this.field.get(field)));
@@ -108,9 +112,9 @@ public class Crops implements GameLogicCrops {
             throw new FieldsException("You need to buy that field");
         }
     }
-
+    //Method for collecting the crops once they are grown
     public void collect(String field) throws CropsException, FieldsException {
-
+        //The amount of crops that will be collected is random
         int numberOf = ( random.nextInt(15) + 1);
         String name = this.field.get(field);
         try {
@@ -126,8 +130,9 @@ public class Crops implements GameLogicCrops {
         }
         throw new CropsException("You got " + numberOf + " " + name);
     }
-
+    //Method for planting the crops
     public void plant(String type, String field) throws CropsException {
+
         try {
             if (this.field.get(field) == null) {
                 throw new CropsException("You need to buy that field");
@@ -143,8 +148,9 @@ public class Crops implements GameLogicCrops {
             throw new CropsException("Not enough seeds");
         }
     }
-
+    //Method for buying the seeds, where the information is loaded
     public void buy(int numberOf, String type) throws NotEnoughMoneyException {
+
         loadInfo(type);
             if (playerLogic.getBalance() >= costCrops.get(type) * numberOf) {
                 this.amount.put(type, this.amount.get(type) + numberOf);
@@ -153,8 +159,9 @@ public class Crops implements GameLogicCrops {
                 throw new NotEnoughMoneyException("You don't have enough money");
             }
     }
-
+    //Method for watering the crops
     public void water(String field) throws CropsException, FieldsException {
+
         if (this.watered.containsKey(field)) {
             if (!this.watered.get(field) || this.watered.get(field) == null) {
                 this.watered.put(field, true);
@@ -165,13 +172,15 @@ public class Crops implements GameLogicCrops {
             throw new FieldsException("There is no field with this name");
         }
     }
+    //Method for restarting the game
     public void restart() {
+
         this.amount.clear();
         this.field.clear();
         this.sincePlanted.clear();
         this.watered.clear();
     }
-
+    //Getters and Setters
     public Map<String, Integer> getAmount() {
         return amount;
     }

@@ -1,10 +1,7 @@
 package types;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 public enum AnimalType {
+    //Information on each animal
     Pig("Potatoes", 50, "Pork"),
     Chicken("Corn", 30,  "Eggs", "Chicken_Meat"),
     Rabbit("Carrots", 40, "Hide", "Rabbit_Meat"),

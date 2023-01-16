@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
+    //Variables for the Player
     public int x, y;
     public int speed;
     public BufferedImage up1;
@@ -17,9 +18,7 @@ public class Entity {
     public String direction;
     public int spriteCounter = 0;
     public int spriteNumber = 1;
-
     public Rectangle hitBox;
     public int hitBoxDefaultX, hitBoxDefaultY;
-    
     public boolean collision = false;
 }

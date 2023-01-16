@@ -5,6 +5,7 @@ import main.UtilityTool;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 public class Objects {
+    //Object variables
     public BufferedImage image;
     public boolean collision = false;
     public String type;
@@ -13,7 +14,7 @@ public class Objects {
     public int hitBoxDefaultX = 0;
     public int hitBoxDefaultY = 0;
     UtilityTool tool = new UtilityTool();
-
+    //Constructor
     public void draw(Graphics2D g2d, GamePanel panel) {
         g2d.drawImage(image, x, y, panel.tilesSize, panel.tilesSize, null);
     }

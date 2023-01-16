@@ -43,85 +43,86 @@ public class GamePanel extends JPanel implements Runnable {
 
     //Game settings
     public GamePanel() {
+
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
     }
-
+    //Set up for the start of the game
     public void setUpGame() {
         objectSetter.setObject();
         gameState = titleScreen;
     }
-
+    //Starts the game thread
     public void startGameThread() {
-        //Start the game thread
         gameThread = new Thread(this);
         gameThread.start();
     }
 
     @Override
     public void run() {
-
+        //The variable drawInterval is calculated by dividing 1 second (1000000000 nanoseconds) by the desired frames per second (60).
+        //This value represents the amount of time that should pass between each frame.
         double drawInterval = 1000000000 / FPS; //1 second divided by FPS
-        double delta = 0;
+        double delta = 0; //The variable delta is used to keep track of the amount of time that has passed since the last frame.
+        //lastTime variable is used to store the timestamp of the last frame, and currentTime variable is used to store the current timestamp.
         long lastTime = System.nanoTime();
         long currentTime;
-
+        //The loop runs while the gameThread variable is not null.
         while (gameThread != null) {
+            //In each iteration of the loop, the current time is recorded and the difference between the current time and the last time is added to the delta variable.
+            //This value is then divided by the drawInterval to get the number of times the update and render methods should be called.
             currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
             lastTime = currentTime;
 
             if (delta >= 1) {
+                //The if statement checks if the delta variable is greater than or equal to 1, if so, it means that enough time has passed to update and render the game.
+                // The update() and repaint() methods are called, and the delta variable is decremented by 1.
                 update();
                 repaint();
                 delta--;
             }
-
         }
     }
+    //Checks the state of the game, in playState it updates the player, in pauseState it stops updating it
     public void update() {
         if (gameState == playState) {
             player.update();
         } else if (gameState == pauseState) {
             //Do nothing
         }
-
     }
 
     public void paintComponent(Graphics g) {
-
+        //Ensures that any background or other elements that the parent class is responsible for drawing are properly
+        //rendered before the game's graphics are drawn.
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g;
-
-        if (gameState == titleScreen){
-
-        }else {
+        //Checks the state of the game
+        if (gameState == titleScreen){//If it's title screen, do not draw the game
+            //Do nothing
+        }else{//If it's not title screen, draw the game, including the tiles, objects, ui, and player
             tileManager.draw(g2d);
-
             for (Objects object : objects) {
                 if (object != null) {
                     object.draw(g2d, this);
                 }
             }
-
             player.draw(g2d);
-
-
         }
         ui.draw(g2d);
         g2d.dispose();
     }
-
+    //Plays the music and sets it on loop
     public void playMusic(int i) {
         sound.setFile(i);
         sound.play();
         sound.loop();
     }
-
+    //Stops the music
     public void stopMusic() {
         sound.stop();
     }

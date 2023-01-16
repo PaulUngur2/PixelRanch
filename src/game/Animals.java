@@ -3,7 +3,6 @@ package game;
 import game.interfaces.GameLogicAnimals;
 import game.interfaces.GameLogicPlayer;
 import types.AnimalType;
-import types.ShopPrices;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,7 +10,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class Animals implements GameLogicAnimals {
-
+    //Animals variables
     private Map<String, String> foodType = new HashMap<>();
     private Map<String,Integer> produceType = new HashMap<>();
     private Map<String, Boolean> fed = new HashMap<>();
@@ -25,13 +24,13 @@ public class Animals implements GameLogicAnimals {
 
     Random random = new Random();
     GameLogicPlayer playerLogic;
-
+    //Constructor
     public Animals(GameLogicPlayer player) {
         this.playerLogic = player;
     }
-
-
+    //Information loader, accessed when an animal is bought
     public void loadInfo(String type) {
+
         if (!isLoaded.getOrDefault(type, false)) {
             switch (type) {
                 case "Pig" -> {
@@ -82,7 +81,7 @@ public class Animals implements GameLogicAnimals {
             }
         }
     }
-
+    //Custom exceptions
     public static class NotEnoughProduceException extends RuntimeException {
         public NotEnoughProduceException(String message) {
             super(message.toUpperCase());
@@ -100,8 +99,9 @@ public class Animals implements GameLogicAnimals {
             super(message.toUpperCase());
         }
     }
-
+    //Sell method for produce, the sole moneymaker
     public void sell(int numberOf, String type) throws NotEnoughProduceException {
+        //Check if the player has enough produce, if he tries to sell too much it'll sell all that's available
         try {
             int available = this.produceType.get(type);
             int amountToSell = Math.min(numberOf, available);
@@ -111,31 +111,34 @@ public class Animals implements GameLogicAnimals {
             throw new NotEnoughProduceException("You can't sell more of that.");
         }
     }
-
+    //Buying fields method, animals are places in the fields
     public void buyField() throws FieldsException, NotEnoughMoneyException {
-            int numFields = field.size(); // number of fields currently owned
+
+            int numFields = field.size();
             int price;
             if (numFields == 0) {
-                price = 0; // first field is free
+                price = 0; //First field is free
             } else {
-                price = (int) (100 * Math.pow(1.3, numFields)); // prices increase by 30% with each purchase
+                price = (int) (100 * Math.pow(1.3, numFields)); //Prices increase by 30% with each purchase
             }
             if (numFields >= 6) {
-                throw new FieldsException("Cannot buy any more fields.");
+                throw new FieldsException("Cannot buy any more fields.");//Max 6 fields
             }
             if (playerLogic.getBalance() < price) {
                 throw new NotEnoughMoneyException("Not enough money to buy field.");
             }
-            field.put("Field " + (numFields + 1), "empty"); // add a new field to the map
-            playerLogic.setBalance(playerLogic.getBalance() - price); // subtract the price from the player's money}
+            field.put("Field " + (numFields + 1), "empty");
+            playerLogic.setBalance(playerLogic.getBalance() - price);
     }
-
+    //Buying method for animals, this is where the information loader is called
     public void buy(String type, String field) throws NotEnoughMoneyException, FieldsException {
+
         try {
             loadInfo(type);
             if (this.field.get(field).equals("empty")) {
                 if (playerLogic.getBalance() >= this.costAnimals.get(type)) {
                     playerLogic.setBalance(playerLogic.getBalance() - this.costAnimals.get(type));
+                    //Once bought you need to feed the animal, but you can also collect produce
                     this.fed.put(field, false);
                     this.field.put(field, type);
                     this.collected.put(field, false);
@@ -149,12 +152,12 @@ public class Animals implements GameLogicAnimals {
             throw new FieldsException("You need to buy that field");
         }
     }
-
+    //Kill method for animals, some animals don't produce anything but meat, or you want to free up space
     public void kill(String field) throws FieldsException {
+
         try {
             if (!this.field.get(field).equals("empty")) {
-                int numberOf;
-
+                int numberOf;//Random number of produce out of the killed animal
                 switch (this.field.get(field)) {
                     case "Pig" -> {
                         numberOf = random.nextInt(8) + 1;
@@ -197,11 +200,12 @@ public class Animals implements GameLogicAnimals {
             throw new FieldsException("You need to buy that field");
         }
     }
-
+    //Collect method for produce, you can only collect once per day and only for some animals
     public void collectProduce(String field) throws FieldsException {
+
         try {
             if (!this.field.get(field).equals("empty") && this.collected.get(field).equals(false)) {
-                int numberOf;
+                int numberOf;//Random number of produce
                 this.collected.put(field, true);
                 switch (this.field.get(field)) {
                     case "Pig" -> throw new FieldsException("Pigs have a sad fate.");
@@ -229,13 +233,14 @@ public class Animals implements GameLogicAnimals {
             throw new FieldsException("You need to buy that field");
         }
     }
-
+    //Restart method to reset the game
     public void restart() {
+
         this.field.clear();
         this.fed.clear();
         this.produceType.clear();
     }
-
+    //Getters and Setters
     public Map<String, String> getFoodType() {
         return foodType;
     }

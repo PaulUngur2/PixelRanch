@@ -21,6 +21,7 @@ public class KeyHandler implements KeyListener{
     GameLogic game;
     GamePanel panel;
     Database database;
+    //Constructor
     public KeyHandler(GamePanel panel, GameLogicPlayer player, GameLogicCrops crops, GameLogicAnimals animals, GameLogic game, Database database) {
         this.panel = panel;
         this.player = player;
@@ -30,21 +31,27 @@ public class KeyHandler implements KeyListener{
         this.database = database;
     }
     public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
-
+    //Does nothing
     @Override
     public void keyTyped(KeyEvent e) {
     }
-
+    //Checks if a key is pressed, handles the controls of the whole game.
+    //To show the choice the played made we have commandNum which is an int value which is increased or decreased with WS
+    //Similar variables are used for the other menus to check which methods to call when the player presses enter
+    //ESC is as a go back button and ENTER is to interact
     @Override
     public void keyPressed(KeyEvent e) {
+
         char key = e.getKeyChar();
         int code = e.getKeyCode();
+        //If in title screen it uses the title screen controls
         if (panel.gameState == panel.titleScreen){
             if(panel.ui.titleScreenState == 0) {
                 titleScreen(code);
             } else if (panel.ui.titleScreenState == 1){
                 characterScreen(code, key);
             }
+            //If in game it uses the game controls, including movement and object interaction
         } else if (panel.gameState == panel.playState) {
             switch (code) {
                 case KeyEvent.VK_W -> upPressed = true;
@@ -66,6 +73,7 @@ public class KeyHandler implements KeyListener{
                     panel.ui.addMessage("Day " + player.getDays());
                 }
             }
+            //If in menu state it uses similar controls to play state and title state
         } else if (panel.gameState == panel.menuState) {
             switch (panel.ui.interaction) {
                 case 1 -> {
@@ -124,6 +132,7 @@ public class KeyHandler implements KeyListener{
                     }
                 }
             }
+            //If in pause state it uses the pause state controls
         } else if (panel.gameState == panel.pauseState) {
             switch (code) {
                 case KeyEvent.VK_ESCAPE -> {
@@ -161,8 +170,10 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //The titleScreen method has a unique use of the controls, where besides the WS keys to go up and down with the choice
+    //there is also the AD for the difficulty option
     private void titleScreen(int code) {
+
         switch (code) {
             case KeyEvent.VK_W -> {
                 panel.ui.commandNum--;
@@ -206,18 +217,23 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //What's unique about this method is that all letter keys work as a way to type the name of the player
+    //and the backspace key is used to delete the last letter
     private void characterScreen(int code, char key) {
+
         if(code == KeyEvent.VK_BACK_SPACE) {
             if(panel.ui.name.length() > 0) {
                 panel.ui.name = panel.ui.name.substring(0, panel.ui.name.length() - 1);
             }
         } else if(code >= KeyEvent.VK_A && code <= KeyEvent.VK_Z) {
+            //The names are limited to 5 characters
             if (panel.ui.name.length() < 5) {
                 panel.ui.name += String.valueOf(key).toUpperCase();
             }
         } else if (code == KeyEvent.VK_ENTER) {
             if (panel.ui.name.length() > 0) {
+                //Once checked that there is a name entered the state of the game is set to play state
+                //The player is checked with the database, the difficulty is set and the music is played
                 panel.gameState = panel.playState;
                 panel.ui.titleScreenState = 0;
                 panel.ui.commandNum = 0;
@@ -234,7 +250,7 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the shop menu screen
     private void shopScreen(int code) {
 
         switch (code) {
@@ -261,8 +277,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the field menu screen
     private void fieldScreen(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> panel.gameState = panel.playState;
             case KeyEvent.VK_W -> {
@@ -292,8 +309,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the farm menu screen
     private void farmScreen(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -330,8 +348,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the shop's buy menu screen
     private void buyScreen(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -371,8 +390,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the shop's sell menu screen
     private void sellScreen(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -416,8 +436,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the farm's buy menu screen
     private void buyAnimalScreen(int code){
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -476,8 +497,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for the field's plant menu screen
     private void plantScreen(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -533,8 +555,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for all the Field based menu screens
     private void menuFieldSwitch(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -601,8 +624,9 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Controls for all the farm Fields based menu screens
     private void menuFarmSwitch(int code) {
+
         switch (code) {
             case KeyEvent.VK_ESCAPE -> {
                 panel.ui.commandNum = 0;
@@ -684,11 +708,11 @@ public class KeyHandler implements KeyListener{
             }
         }
     }
-
+    //Check to see if the player stopped pressing the keys
     @Override
     public void keyReleased(KeyEvent e) {
-        int code = e.getKeyCode();
 
+        int code = e.getKeyCode();
         switch (code) {
             case KeyEvent.VK_W -> upPressed = false;
             case KeyEvent.VK_S -> downPressed = false;

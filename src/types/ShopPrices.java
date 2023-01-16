@@ -1,10 +1,7 @@
 package types;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 public enum ShopPrices {
+    //Value for produce
     Pork(10),
     Eggs(5),
     Chicken_Meat(8),

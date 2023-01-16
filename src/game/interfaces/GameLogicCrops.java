@@ -5,6 +5,7 @@ import game.Crops;
 import java.util.Map;
 
 public interface GameLogicCrops {
+    //Interface for the Crops class
     void buy(int numberOf, String type) throws Crops.NotEnoughMoneyException;
     void water(String field) throws Crops.CropsException, Crops.FieldsException;
     void buyField() throws Crops.FieldsException, Crops.NotEnoughMoneyException;
