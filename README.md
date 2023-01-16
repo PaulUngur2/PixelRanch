@@ -21,3 +21,4 @@ CONTROLS
 Music and sprites were done by me.
 I do not claim rights over the font I used.(Press Start K)
 
+NOTE - The database saving system won't work on other devices without creating the database
